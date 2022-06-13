@@ -314,13 +314,13 @@ function parse_pulse_pgm_dump_resp(bytes) {
 	for (i = 6 ; i <= 74; i++) {
   		checksumVal += bytes[i];
 	}
-	//log("checksumVal", checksumVal)
+	log("checksumVal", checksumVal)
 	var checksumValBits = (checksumVal).toString(2);
 	checksumBits = checksumValBits.substring(checksumValBits.length-7,  checksumValBits.length);
 	log("checksumBits", checksumBits);
 	var checksum = parseInt(checksumBits, 2);
 	log("checksum_mine", checksum);
-	
+
 	log("checksum", bytes[75])
 }
 
@@ -336,7 +336,9 @@ function curr_pgm_to_pgm_dump() {
 	bytes.push(0x0b); // machine: Pulse
 	bytes.push(0); // // device id (0 = universal)
 	bytes.push(0x00); // pgm dump resp
-	
+
+	bytes.push(0); // pgm_id
+
     bytes.push(d.get("osc1_semi") + 16 + 48); // aka "transpose"
     bytes.push(d.get("osc1_fine") + 64); // aka "tune"
     bytes.push(d.get("osc1_wave")); // aka "shape"
@@ -427,12 +429,19 @@ function curr_pgm_to_pgm_dump() {
     bytes.push(d.get("vca_velo_sense") + 64);
     bytes.push(d.get("vca_pan") + 64);
 
+	// fill
+	bytes.push(0)
+	bytes.push(0)
+	bytes.push(0)
+	bytes.push(0)
+
     var checksumVal = 0;
     var i = 0;
     for (i = 6 ; i <= 74; i++) {
-  	checksumVal += bytes[i];
+		log(i, bytes[i])
+  		checksumVal += bytes[i];
     }
-    //log("checksumVal", checksumVal)
+    log("checksumVal", checksumVal)
     var checksumValBits = (checksumVal).toString(2);
     checksumBits = checksumValBits.substring(checksumValBits.length-7,  checksumValBits.length);
     // log("checksumBits", checksumBits);
